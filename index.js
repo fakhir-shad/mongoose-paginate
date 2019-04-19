@@ -25,7 +25,7 @@ function paginate(query, options, callback) {
   let lean = options.lean || false;
   let leanWithId = options.leanWithId ? options.leanWithId : true;
   let limit = options.limit ? options.limit : 10;
-  let page, offset, skip, promises;
+  let page, offset, skip, docsPromise, countPromise;
   if (options.offset) {
     offset = options.offset;
     skip = offset;
@@ -49,15 +49,10 @@ function paginate(query, options, callback) {
         docsQuery.populate(item);
       });
     }
-    console.log("Ref", this);
-    const count = this.find(query).estimatedDocumentCount().exec()
-    console.log("Count", count)
-    promises = {
-      docs: docsQuery.exec(),
-      count
-    };
+    countPromise = this.countDocuments(query).exec()
+    docsPromise = docsQuery.exec()
     if (lean && leanWithId) {
-      promises.docs = promises.docs.then((docs) => {
+      docsPromise = docsPromise.then((docs) => {
         docs.forEach((doc) => {
           doc.id = String(doc._id);
         });
@@ -65,8 +60,7 @@ function paginate(query, options, callback) {
       });
     }
   }
-  promises = Object.keys(promises).map((x) => promises[x]);
-  return Promise.all(promises).then((data) => {
+  return Promise.all([countPromise, docsPromise]).then((data) => {
     let result = {
       docs: data.docs,
       total: data.count,
