@@ -50,9 +50,10 @@ function paginate(query, options, callback) {
       });
     }
     console.log("Ref", this);
+    const count = this.countDocuments(query).exec()
     promises = {
       docs: docsQuery.exec(),
-      count: this.find(query).countDocuments().exec()
+      count
     };
     if (lean && leanWithId) {
       promises.docs = promises.docs.then((docs) => {
