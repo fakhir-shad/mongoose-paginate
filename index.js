@@ -50,7 +50,7 @@ function paginate(query, options, callback) {
       });
     }
     console.log("Ref", this);
-    const count = this.countDocuments(query).exec()
+    const count = this.find(query).estimatedDocumentCount().exec()
     promises = {
       docs: docsQuery.exec(),
       count
