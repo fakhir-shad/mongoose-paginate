@@ -37,6 +37,7 @@ function paginate(query, options, callback) {
     offset = 0;
     skip = offset;
   }
+  const countPromise = this.countDocuments(query).exec()
   if (limit) {
     let docsQuery = this.find(query)
       .select(select)
@@ -49,7 +50,6 @@ function paginate(query, options, callback) {
         docsQuery.populate(item);
       });
     }
-    const countPromise = this.countDocuments(query).exec()
     docsPromise = docsQuery.exec()
     if (lean && leanWithId) {
       docsPromise = docsPromise.then((docs) => {
