@@ -49,9 +49,10 @@ function paginate(query, options, callback) {
         docsQuery.populate(item);
       });
     }
+    console.log("Ref", this);
     promises = {
       docs: docsQuery.exec(),
-      count: this.countDocuments(query).exec()
+      count: this.count(query).exec()
     };
     if (lean && leanWithId) {
       promises.docs = promises.docs.then((docs) => {
@@ -66,7 +67,7 @@ function paginate(query, options, callback) {
   return Promise.all(promises).then((data) => {
     let result = {
       docs: data.docs,
-      total: data.countDocuments,
+      total: data.count,
       limit: limit
     };
     if (offset !== undefined) {
@@ -74,7 +75,7 @@ function paginate(query, options, callback) {
     }
     if (page !== undefined) {
       result.page = page;
-      result.pages = Math.ceil(data.countDocuments / limit) || 1;
+      result.pages = Math.ceil(data.count / limit) || 1;
     }
     if (typeof callback === 'function') {
       return callback(null, result);
