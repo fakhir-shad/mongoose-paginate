@@ -51,6 +51,7 @@ function paginate(query, options, callback) {
     }
     console.log("Ref", this);
     const count = this.find(query).estimatedDocumentCount().exec()
+    console.log("Count", count)
     promises = {
       docs: docsQuery.exec(),
       count
