@@ -37,7 +37,7 @@ function paginate(query, options, callback) {
     offset = 0;
     skip = offset;
   }
-  const countPromise = this.countDocuments(query).exec()
+  const countPromise = this.countDocuments(query)
   if (limit) {
     let docsQuery = this.find(query)
       .select(select)
@@ -60,10 +60,12 @@ function paginate(query, options, callback) {
       });
     }
   }
-  return Promise.all([countPromise, docsPromise]).then((data) => {
-    let result = {
+  console.log("Count", countPromise)
+  return Promise.all([docsPromise]).then((data) => {
+    countPromise.then(count => {
+      let result = {
       docs: data.docs,
-      total: data.count,
+      total: count,
       limit: limit
     };
     if (offset !== undefined) {
@@ -79,6 +81,7 @@ function paginate(query, options, callback) {
     let promise = new Promise();
     promise.resolve(result);
     return promise;
+    })
   });
 }
 
