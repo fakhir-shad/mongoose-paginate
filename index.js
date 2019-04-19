@@ -61,7 +61,7 @@ function paginate(query, options, callback) {
     }
   }
   console.log("Count", countPromise)
-  return Promise.all([docsPromise]).then((data) => {
+  return Promise.resolve(docsPromise).then((data) => {
     countPromise.then(count => {
       let result = {
       docs: data.docs,
