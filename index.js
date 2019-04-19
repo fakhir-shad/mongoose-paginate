@@ -52,7 +52,7 @@ function paginate(query, options, callback) {
     console.log("Ref", this);
     promises = {
       docs: docsQuery.exec(),
-      count: this.count(query).exec()
+      count: this.find(query).countDocuments().exec()
     };
     if (lean && leanWithId) {
       promises.docs = promises.docs.then((docs) => {
